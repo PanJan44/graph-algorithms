@@ -4,6 +4,7 @@
 
 void Graph::AddConnection(int u, int v, int weight) {
   adjacencyList[u].emplace_back(Node(v, weight));
+  distanceArray[u][v] = weight;
 }
 
 void Graph::PrintGraph() const {

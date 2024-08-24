@@ -5,7 +5,10 @@
 #include <queue>
 #include <unordered_map>
 
-std::unordered_map<int, int> Algorithms::Dijkstra(const Graph &graph, int startVertex) {
+const int INF = std::numeric_limits<int>::max();
+
+std::unordered_map<int, int> Algorithms::Dijkstra(const Graph &graph,
+                                                  int startVertex) {
   auto distances = graph.InitDistances(startVertex);
 
   // TODO implementation in graph class
@@ -24,7 +27,8 @@ std::unordered_map<int, int> Algorithms::Dijkstra(const Graph &graph, int startV
     auto examinedVertexDistance = pq.top().second;
     pq.pop();
 
-    fmt::print("examinedVertex {0}, distance: {1}\n", examinedVertex, examinedVertexDistance);
+    fmt::print("examinedVertex {0}, distance: {1}\n", examinedVertex,
+               examinedVertexDistance);
 
     if (examinedVertexDistance > distances[examinedVertex]) {
       continue;
@@ -33,7 +37,8 @@ std::unordered_map<int, int> Algorithms::Dijkstra(const Graph &graph, int startV
     for (const auto &neighbour : graph.GetNeighbours(examinedVertex)) {
       const auto newDistance = distances[examinedVertex] + neighbour.weight;
       if (newDistance < distances[neighbour.vertex]) {
-        fmt::println("I am pushing: neighbour {0}, distance: {1}", neighbour.vertex, newDistance);
+        fmt::println("I am pushing: neighbour {0}, distance: {1}",
+                     neighbour.vertex, newDistance);
         distances[neighbour.vertex] = newDistance;
         pq.push({neighbour.vertex, newDistance});
       }
@@ -43,7 +48,8 @@ std::unordered_map<int, int> Algorithms::Dijkstra(const Graph &graph, int startV
   return distances;
 }
 
-std::unordered_map<int, int> Algorithms::BellmanFord(const Graph &graph, int startVertex) {
+std::unordered_map<int, int> Algorithms::BellmanFord(const Graph &graph,
+                                                     int startVertex) {
   auto distances = graph.InitDistances(startVertex);
 
   for (auto i = 0; i < distances.size() - 1; ++i) {
@@ -51,18 +57,35 @@ std::unordered_map<int, int> Algorithms::BellmanFord(const Graph &graph, int sta
       const auto u = pair.first;
       for (const auto &neighbour : pair.second) {
         const auto v = neighbour.vertex;
-        if (distances[u] != std::numeric_limits<int>::max()) {
-          distances[v] = std::min(distances[v], distances[u] + neighbour.weight);
+        if (distances[u] != INF) {
+          distances[v] =
+              std::min(distances[v], distances[u] + neighbour.weight);
         }
       }
     }
 
     fmt::println("distances after {0} iteration: ", i + 1);
-    for(const auto &pair : distances)
+    for (const auto &pair : distances)
       fmt::println("distances[{0}] = {1}: ", pair.first, pair.second);
   }
 
   return distances;
+}
+
+std::vector<std::vector<int>> Algorithms::FloydWarshall(const Graph &graph) {
+  auto distanceArray = graph.GetDistanceArray();
+
+  for (auto i = 0; i < distanceArray.size(); i++) {
+    for (auto y = 0; y < distanceArray.size(); y++) {
+      for (auto x = 0; x < distanceArray.size(); x++) {
+        if (distanceArray[y][i] != INF && distanceArray[x][i]) {
+          distanceArray[x][y] = std::min(distanceArray[x][y],distanceArray[y][i] + distanceArray[x][i]);
+        }
+      }
+    }
+  }
+
+  return distanceArray;
 }
 
 void Algorithms::DFS(const Graph &graph, int startVertex,
