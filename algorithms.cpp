@@ -13,7 +13,6 @@ const int INF = std::numeric_limits<int>::max();
 std::unordered_map<int, int> Algorithms::Dijkstra(const Graph &graph, int startVertex) {
   auto distances = graph.InitDistances(startVertex);
 
-  // TODO implementation in graph class
   auto compare = [](const std::pair<int, int> &a, const std::pair<int, int> &b) { return a.second > b.second;
   };
 
@@ -44,8 +43,7 @@ std::unordered_map<int, int> Algorithms::Dijkstra(const Graph &graph, int startV
   return distances;
 }
 
-std::unordered_map<int, int> Algorithms::BellmanFord(const Graph &graph,
-                                                     int startVertex) {
+std::unordered_map<int, int> Algorithms::BellmanFord(const Graph &graph, int startVertex) {
   auto distances = graph.InitDistances(startVertex);
 
   for (auto i = 0; i < distances.size() - 1; ++i) {

@@ -3,28 +3,6 @@
 #include "graph.h"
 #include "fmt/include/fmt/ranges.h"
 
-std::string MapVertex(int vertex) {
-  switch(vertex){
-    case 1:
-      return "A";
-    break;
-    case 2:
-      return "B";
-    break;
-    case 3:
-      return "C";
-    break;
-    case 4:
-      return "D";
-    break;
-    case 5:
-      return "E";
-    break;
-    default: 
-      return "";
-  }
-}
-
 int main(int argc, char *argv[]) {
   const auto startVertex = 1;
   Graph graph;
@@ -71,11 +49,10 @@ int main(int argc, char *argv[]) {
   const auto topologicalSort = Algorithms::TopologicalSort(graph);
   fmt::println("{}", fmt::join(topologicalSort, ", "));
 
-  /*const auto res = Algorithms::BellmanFord(graph2, startVertex);*/
-  /*std::cout<<std::endl;*/
-  /*for(const auto& pair : res) {*/
-  /*  fmt::print("Vertex: {0} -> {1} distance: {2}\n", startVertex, pair.first, pair.second);*/
-  /*}*/
+  const auto res = Algorithms::BellmanFord(graph2, startVertex);
+  for(const auto& pair : res) {
+    fmt::print("Vertex: {0} -> {1} distance: {2}\n", startVertex, pair.first, pair.second);
+  }
 
   return 0;
 }
