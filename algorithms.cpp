@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <limits>
 #include <queue>
+#include <stack>
 #include <tuple>
 #include <unordered_map>
 #include <unordered_set>
@@ -111,6 +112,45 @@ std::tuple<bool, std::unordered_set<int>, std::unordered_set<int>> Algorithms::I
   }
 
   return std::make_tuple(true, V1, V2);
+}
+
+std::vector<int> Algorithms::TopologicalSort(const Graph& graph) {
+  std::unordered_map<int, int> inDegree;
+  std::stack<int> zeroInDegreeStack;
+  std::vector<int> result;
+
+  for(const auto& pair : graph.GetAdjacencyList()) {
+    inDegree[pair.first] = 0;
+  }
+
+  for(const auto& pair : graph.GetAdjacencyList()) {
+    const auto u = pair.first;
+    for(const auto& neighbour : graph.GetNeighbours(u)) {
+      inDegree[neighbour.vertex]++;
+    }
+  }
+
+  for(const auto& pair : inDegree) { 
+    if(pair.second == 0) {
+      zeroInDegreeStack.push(pair.first);
+    }
+  }
+
+  while(!zeroInDegreeStack.empty()) {
+    const auto u = zeroInDegreeStack.top();
+    zeroInDegreeStack.pop();
+    result.emplace_back(u);
+
+    for(const auto& neighbour : graph.GetNeighbours(u)) {
+      const auto v = neighbour.vertex;
+      inDegree[v]--;
+      if(inDegree[v] == 0) {
+        zeroInDegreeStack.push(v);
+      }
+    }
+  }
+
+  return result;
 }
 
 void Algorithms::DFS(const Graph &graph, int startVertex, std::unordered_map<int, bool> &visited) {

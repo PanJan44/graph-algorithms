@@ -57,11 +57,19 @@ int main(int argc, char *argv[]) {
   graph3.AddConnection(5, 6, 1, true);
   graph3.AddConnection(6, 7, 1, true);
 
+  Graph graph4;
+  graph4.AddConnection(1, 2, 1);
+  graph4.AddConnection(1, 5, 1);
+  graph4.AddConnection(3, 5, 1);
+  graph4.AddConnection(5, 4, 1);
+
   const auto [isBiparite, V1, V2] = Algorithms::IsBiparite(graph3, startVertex);
   fmt::println("Is biparite: {0}", isBiparite);
-
   fmt::print("V1: {}\n", fmt::join(V1, ", "));
   fmt::print("V2: {}\n", fmt::join(V2, ", "));
+
+  const auto topologicalSort = Algorithms::TopologicalSort(graph);
+  fmt::println("{}", fmt::join(topologicalSort, ", "));
 
   /*const auto res = Algorithms::BellmanFord(graph2, startVertex);*/
   /*std::cout<<std::endl;*/
