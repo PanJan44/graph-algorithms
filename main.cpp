@@ -1,7 +1,7 @@
 #include "algorithms.h"
 #include "fmt/include/fmt/base.h"
 #include "graph.h"
-#include <iostream>
+#include "fmt/include/fmt/ranges.h"
 
 std::string MapVertex(int vertex) {
   switch(vertex){
@@ -26,6 +26,7 @@ std::string MapVertex(int vertex) {
 }
 
 int main(int argc, char *argv[]) {
+  const auto startVertex = 1;
   Graph graph;
 
   graph.AddConnection(1, 2, 6); //A -> B
@@ -44,14 +45,29 @@ int main(int argc, char *argv[]) {
   graph2.AddConnection(3, 2, 1);
   graph2.AddConnection(4, 3, 2);
 
-  const auto startVertex = 1;
+  Graph graph3;
+  graph3.AddConnection(1, 2, 1, true);
+  graph3.AddConnection(1, 3, 1, true);
+  graph3.AddConnection(1, 4, 1, true);
+  graph3.AddConnection(1, 6, 1, true);
+  graph3.AddConnection(2, 5, 1, true);
+  graph3.AddConnection(3, 5, 1, true);
+  graph3.AddConnection(3, 7, 1, true);
+  graph3.AddConnection(4, 7, 1, true);
+  graph3.AddConnection(5, 6, 1, true);
+  graph3.AddConnection(6, 7, 1, true);
 
-  const auto res = Algorithms::BellmanFord(graph2, startVertex);
-  std::cout<<std::endl;
-  for(const auto& pair : res) {
-    fmt::print("Vertex: {0} -> {1} distance: {2}\n", startVertex, pair.first, pair.second);
-    /*fmt::print("Vertex: {0} -> {1} distance: {2}\n", MapVertex(startVertex), MapVertex(pair.first), pair.second);*/
-  }
+  const auto [isBiparite, V1, V2] = Algorithms::IsBiparite(graph3, startVertex);
+  fmt::println("Is biparite: {0}", isBiparite);
+
+  fmt::print("V1: {}\n", fmt::join(V1, ", "));
+  fmt::print("V2: {}\n", fmt::join(V2, ", "));
+
+  /*const auto res = Algorithms::BellmanFord(graph2, startVertex);*/
+  /*std::cout<<std::endl;*/
+  /*for(const auto& pair : res) {*/
+  /*  fmt::print("Vertex: {0} -> {1} distance: {2}\n", startVertex, pair.first, pair.second);*/
+  /*}*/
 
   return 0;
 }

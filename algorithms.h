@@ -3,10 +3,12 @@
 
 #include "graph.h"
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 class Algorithms {
 public:
+  static std::tuple<bool, std::unordered_set<int>, std::unordered_set<int>> IsBiparite(const Graph& graph, int startVertex);
   static std::unordered_map<int, int> Dijkstra(const Graph& graph, int startVertex);
   static std::unordered_map<int, int> BellmanFord(const Graph& graph, int startVertex);
   static std::vector<std::vector<int>> FloydWarshall(const Graph& graph);

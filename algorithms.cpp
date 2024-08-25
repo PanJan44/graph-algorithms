@@ -3,23 +3,20 @@
 #include <algorithm>
 #include <limits>
 #include <queue>
+#include <tuple>
 #include <unordered_map>
+#include <unordered_set>
 
 const int INF = std::numeric_limits<int>::max();
 
-std::unordered_map<int, int> Algorithms::Dijkstra(const Graph &graph,
-                                                  int startVertex) {
+std::unordered_map<int, int> Algorithms::Dijkstra(const Graph &graph, int startVertex) {
   auto distances = graph.InitDistances(startVertex);
 
   // TODO implementation in graph class
-  auto compare = [](const std::pair<int, int> &a,
-                    const std::pair<int, int> &b) {
-    return a.second > b.second;
+  auto compare = [](const std::pair<int, int> &a, const std::pair<int, int> &b) { return a.second > b.second;
   };
 
-  std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>,
-                      decltype(compare)>
-      pq(compare);
+  std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, decltype(compare)> pq(compare);
   pq.push({startVertex, 0});
 
   while (!pq.empty()) {
@@ -27,8 +24,7 @@ std::unordered_map<int, int> Algorithms::Dijkstra(const Graph &graph,
     auto examinedVertexDistance = pq.top().second;
     pq.pop();
 
-    fmt::print("examinedVertex {0}, distance: {1}\n", examinedVertex,
-               examinedVertexDistance);
+    fmt::print("examinedVertex {0}, distance: {1}\n", examinedVertex, examinedVertexDistance);
 
     if (examinedVertexDistance > distances[examinedVertex]) {
       continue;
@@ -37,8 +33,7 @@ std::unordered_map<int, int> Algorithms::Dijkstra(const Graph &graph,
     for (const auto &neighbour : graph.GetNeighbours(examinedVertex)) {
       const auto newDistance = distances[examinedVertex] + neighbour.weight;
       if (newDistance < distances[neighbour.vertex]) {
-        fmt::println("I am pushing: neighbour {0}, distance: {1}",
-                     neighbour.vertex, newDistance);
+        fmt::println("I am pushing: neighbour {0}, distance: {1}", neighbour.vertex, newDistance);
         distances[neighbour.vertex] = newDistance;
         pq.push({neighbour.vertex, newDistance});
       }
@@ -58,15 +53,10 @@ std::unordered_map<int, int> Algorithms::BellmanFord(const Graph &graph,
       for (const auto &neighbour : pair.second) {
         const auto v = neighbour.vertex;
         if (distances[u] != INF) {
-          distances[v] =
-              std::min(distances[v], distances[u] + neighbour.weight);
+          distances[v] = std::min(distances[v], distances[u] + neighbour.weight);
         }
       }
     }
-
-    fmt::println("distances after {0} iteration: ", i + 1);
-    for (const auto &pair : distances)
-      fmt::println("distances[{0}] = {1}: ", pair.first, pair.second);
   }
 
   return distances;
@@ -79,7 +69,7 @@ std::vector<std::vector<int>> Algorithms::FloydWarshall(const Graph &graph) {
     for (auto y = 0; y < distanceArray.size(); y++) {
       for (auto x = 0; x < distanceArray.size(); x++) {
         if (distanceArray[y][i] != INF && distanceArray[x][i]) {
-          distanceArray[x][y] = std::min(distanceArray[x][y],distanceArray[y][i] + distanceArray[x][i]);
+          distanceArray[x][y] = std::min(distanceArray[x][y], distanceArray[y][i] + distanceArray[x][i]);
         }
       }
     }
@@ -88,8 +78,42 @@ std::vector<std::vector<int>> Algorithms::FloydWarshall(const Graph &graph) {
   return distanceArray;
 }
 
-void Algorithms::DFS(const Graph &graph, int startVertex,
-                     std::unordered_map<int, bool> &visited) {
+std::tuple<bool, std::unordered_set<int>, std::unordered_set<int>> Algorithms::IsBiparite(const Graph& graph, int startVertex) {
+  auto distances = graph.InitDistances(startVertex);
+  std::queue<int> q;
+  q.push(startVertex);
+
+  while(!q.empty()) {
+    const auto u = q.front();
+    q.pop();
+
+    for(const auto& neighbour : graph.GetNeighbours(u)) {
+      const auto v = neighbour.vertex;
+      if(distances[v] == INF) {
+        distances[v] = distances[u] + 1;
+        q.push(v);
+      }
+      else if(distances[u] % 2 == distances[v] % 2) {
+        return std::make_tuple(false, std::unordered_set<int>(), std::unordered_set<int>());
+      }
+    }
+  }
+
+  std::unordered_set<int> V1;
+  std::unordered_set<int> V2;
+  for(const auto& pair : distances) {
+    if(pair.second % 2 == 0) {
+      V1.insert(pair.first);
+    }
+    else {
+      V2.insert(pair.first);
+    }
+  }
+
+  return std::make_tuple(true, V1, V2);
+}
+
+void Algorithms::DFS(const Graph &graph, int startVertex, std::unordered_map<int, bool> &visited) {
   visited[startVertex] = true;
   fmt::println("visiting vertex: {0}", startVertex);
 

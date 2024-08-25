@@ -2,9 +2,20 @@
 #include "./fmt/include/fmt/core.h"
 #include <limits>
 
-void Graph::AddConnection(int u, int v, int weight) {
+void Graph::AddConnection(int u, int v, int weight, bool directed) {
   adjacencyList[u].emplace_back(Node(v, weight));
+
+  if(directed) {
+    adjacencyList[v].emplace_back(Node(u, weight));
+  }
+}
+
+void Graph::AddConnectionArray(int u, int v, int weight, bool directed) {
   distanceArray[u][v] = weight;
+
+  if(directed) {
+    distanceArray[v][u] = weight;
+  }
 }
 
 void Graph::PrintGraph() const {

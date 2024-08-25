@@ -21,8 +21,9 @@ private:
 public:
   Graph() = default;
   Graph(int verticesCount) { distanceArray.resize(verticesCount, std::vector<int>(verticesCount, std::numeric_limits<int>::max()));}
-  void AddConnection(int u, int v, int weight);
   void PrintGraph() const;
+  void AddConnection(int u, int v, int weight, bool directed = false);
+  void AddConnectionArray(int u, int v, int weight, bool directed);
   std::unordered_map<int, int> InitDistances(int startVertex) const;
   std::vector<Node> GetNeighbours(int vertex) const;
   std::unordered_map<int, std::vector<Node>> GetAdjacencyList() const { return adjacencyList; }
